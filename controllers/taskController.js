@@ -86,4 +86,54 @@ async function findByIdAndUpdate(req, res, next) {
         next(err)
     }
 }
-module.exports = { createTask, getAllTasks, getTaskById , findByIdAndUpdate};
+
+async function getTasksByStatus(req, res, next) {
+  try {
+    const { status } = req.params;
+    const items = await Task.find({ status }).sort({ createdAt: -1 }).lean();
+    return res.status(200).json({
+      data: items,
+      meta: { totalItems: items.length }
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function markTaskComplete(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const filter = { _id: id, status: { $ne: 'completed' } };
+
+    const update = {
+      $set: {
+        status: 'completed'
+      }
+    };
+
+    const options = { new: true, runValidators: true, context: 'query' };
+
+    const updated = await Task.findOneAndUpdate(filter, update, options).lean();
+
+    if (updated) {
+      return res.status(200).json({ data: updated });
+    }
+
+    const existing = await Task.findById(id).lean();
+    if (!existing) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    if (existing.status === 'completed') {
+      return res.status(200).json({ data: existing, message: 'Task already completed' });
+    }
+
+    return res.status(409).json({ error: 'Unable to mark task complete' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+module.exports = { createTask, getAllTasks, getTaskById , findByIdAndUpdate,   getTasksByStatus, markTaskComplete};

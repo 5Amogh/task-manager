@@ -22,4 +22,13 @@ function checkIfTaskExists(req,res,next) {
     next();
 }
 
-module.exports = { validateBody , checkIfTaskExists };
+const VALID_STATUSES = ['pending', 'in-progress', 'completed', 'cancelled'];
+function validateStatusParam(req, res, next) {
+  const { status } = req.params;
+  if (!VALID_STATUSES.includes(status)) {
+    return res.status(400).json({ error: 'Invalid status parameter' });
+  }
+  return next();
+}
+
+module.exports = { validateBody , checkIfTaskExists, validateStatusParam};
