@@ -12,11 +12,11 @@ function validateBody(schema) {
   };
 }
 
-function checkIfTaskExists(req,res,next) {
+function checkIfIdIsValid(req,res,next) {
     const { id }  = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'Invalid Task Id' });
+        return res.status(400).json({ error: 'Invalid Id' });
     }
 
     next();
@@ -33,4 +33,4 @@ function validateStatusParam(req, res, next) {
   return next();
 }
 
-module.exports = { validateBody , checkIfTaskExists, validateStatusParam};
+module.exports = { validateBody, checkIfIdIsValid, validateStatusParam};

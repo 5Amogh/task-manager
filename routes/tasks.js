@@ -1,8 +1,8 @@
 const express = require('express');
 const Joi = require('joi');
 
-const { validateBody, checkIfTaskExists, validateStatusParam } = require('../middleware/validator');
-const { createTask, getAllTasks, getTaskById, findByIdAndUpdate, getTasksByStatus, markTaskComplete} = require('../controllers/taskController');
+const { validateBody, checkIfIdIsValid , validateStatusParam } = require('../middleware/validator');
+const { createTask, getAllTasks, getTaskById, findByIdAndUpdate, getTasksByStatus, markTaskComplete, deleteTaskById } = require('../controllers/taskController');
 
 const router = express.Router();
 
@@ -29,12 +29,14 @@ router.post('/', validateBody(createTaskSchema), createTask);
 
 router.get('/', getAllTasks);
 
-router.get('/:id', checkIfTaskExists, getTaskById);
+router.get('/:id', checkIfIdIsValid, getTaskById);
 
-router.patch('/:id', validateBody(updateTaskSchema), checkIfTaskExists, findByIdAndUpdate)
+router.delete('/:id', checkIfIdIsValid, deleteTaskById);
+
+router.patch('/:id', validateBody(updateTaskSchema), checkIfIdIsValid , findByIdAndUpdate)
 
 router.get('/status/:status', validateStatusParam, getTasksByStatus);
 
-router.put('/:id/complete', checkIfTaskExists, markTaskComplete);
+router.put('/:id/complete', checkIfIdIsValid , markTaskComplete);
 
 module.exports = router;

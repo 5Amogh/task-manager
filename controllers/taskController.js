@@ -135,5 +135,22 @@ async function markTaskComplete(req, res, next) {
   }
 }
 
+async function deleteTaskById(req, res, next) {
+  try {
+    const { id } = req.params;
 
-module.exports = { createTask, getAllTasks, getTaskById , findByIdAndUpdate,   getTasksByStatus, markTaskComplete};
+    const task = await Task.findByIdAndDelete(id);
+
+    if (!task) {
+      return res.status(404).json({ error: 'task not found' });
+    }
+
+    return res.status(200).json({ message: 'Task has been deleted successfully' })
+
+  } catch (err) {
+    next(err)
+  }
+}
+
+
+module.exports = { createTask, getAllTasks, getTaskById, findByIdAndUpdate, getTasksByStatus, markTaskComplete, deleteTaskById };

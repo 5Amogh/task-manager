@@ -63,4 +63,17 @@ async function createUser(req,res, next) {
     }
 }
 
-module.exports = { createUser }
+async function getUser(req, res, next) {
+    try {
+        const { id } = req.params
+
+        const foundUser = await User.findById(id, { password: 0 }).lean();
+        
+        return res.status(200).json({ data: foundUser });
+
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports = { createUser, getUser }

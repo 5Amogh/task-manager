@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const tasksRouter = require('./routes/tasks');
 const usersRouter = require('./routes/users');
+const { fetchInspirationalQuotes } = require('./controllers/quotesController');
 
 const app = express();
 
@@ -30,6 +31,8 @@ app.get('/api/server/health', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+app.get('/api/inspiration/quote', fetchInspirationalQuotes);
 
 
 app.use((err, req, res, next) => {

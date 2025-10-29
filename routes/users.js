@@ -1,8 +1,8 @@
 const express = require('express');
 const Joi = require('joi');
 
-const { validateBody } = require('../middleware/validator');
-const { createUser } = require('../controllers/userController');
+const { validateBody, checkIfIdIsValid } = require('../middleware/validator');
+const { createUser, getUser } = require('../controllers/userController');
 
 const router = express.Router();
 
@@ -21,5 +21,7 @@ const createUserSchema = Joi.object({
 });
 
 router.post('/', validateBody(createUserSchema), createUser);
+
+router.get('/:id', checkIfIdIsValid, getUser);
 
 module.exports = router;
