@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const tasksRouter = require('./routes/tasks');
+const usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'Task API running 🚀' });
+  res.status(200).json({ status: 'ok', message: 'API running'});
 });
 
 // I'm using this for health check
@@ -23,7 +24,7 @@ app.get('/api/server/health', (req, res) => {
   const ok = state === 1;
 
   res.status(ok ? 200 : 503).json({
-    service: 'task-api',
+    service: 'api',
     db: states[state],
     uptimeSeconds: process.uptime(),
     timestamp: new Date().toISOString(),
@@ -39,6 +40,8 @@ app.use((err, req, res, next) => {
 });
 
 app.use('/api/tasks', tasksRouter);
+
+app.use('/api/users', usersRouter);
 
 async function startServer() {
   try {
