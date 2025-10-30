@@ -13,9 +13,9 @@ function validateBody(schema) {
 }
 
 function checkIfIdIsValid(req,res,next) {
-    const { id }  = req.params;
+    const { id, userId }  = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if ((id && !mongoose.Types.ObjectId.isValid(id)) || (userId && !mongoose.Types.ObjectId.isValid(userId))) {
         return res.status(400).json({ error: 'Invalid Id' });
     }
 

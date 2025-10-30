@@ -152,5 +152,23 @@ async function deleteTaskById(req, res, next) {
   }
 }
 
+async function getUserTasks(req, res, next) {
+  try {
+    const { userId } = req.params;
 
-module.exports = { createTask, getAllTasks, getTaskById, findByIdAndUpdate, getTasksByStatus, markTaskComplete, deleteTaskById };
+    const filter = { userId: `${userId}` };
+
+    const tasks = await Task.find(filter);
+
+    if (!tasks) {
+      return res.status(404).json({ error: 'No task found for the user'})
+    }
+
+    return res.status(200).json({ data: tasks})
+  } catch (err) {
+      next(err);
+  }
+}
+
+
+module.exports = { createTask, getAllTasks, getTaskById, findByIdAndUpdate, getTasksByStatus, markTaskComplete, deleteTaskById, getUserTasks };
